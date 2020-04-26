@@ -17,3 +17,8 @@ int driver::parse(const std::string &f) {
   scan_end ();
   return res;
 }
+
+// TODO(jez) look up the signature expected here
+int yylex(driver &drv) {
+    throw "TODO(jez) Unimplemented";
+}

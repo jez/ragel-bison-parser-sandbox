@@ -8,12 +8,6 @@ load("@rules_bison//bison:bison.bzl", "bison")
 #     language = "c++",
 # )
 
-flex(
-    name = "lexer_impl_flex",
-    src = "lexer_impl_flex.ll",
-    flex_options = [],
-)
-
 bison(
     name = "parser_impl",
     src = "parser_impl.yy",
@@ -23,7 +17,6 @@ bison(
 cc_library(
     name = "parser",
     srcs = glob(["*.cc"]) + [
-        ":lexer_impl_flex",
         ":parser_impl",
     ],
     hdrs = glob(["*.h", "*.hh"]),

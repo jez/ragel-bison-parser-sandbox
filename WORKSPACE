@@ -15,6 +15,10 @@ llvm_toolchain(
     llvm_version = "9.0.0",
 )
 
+# Use llvm_toolchain by default
+load("@llvm_toolchain//:toolchains.bzl", "llvm_register_toolchains")
+llvm_register_toolchains()
+
 load("@rules_ragel//ragel:ragel.bzl", "ragel_register_toolchains")
 ragel_register_toolchains()
 
@@ -26,7 +30,6 @@ flex_register_toolchains()
 
 load("@rules_bison//bison:bison.bzl", "bison_register_toolchains")
 bison_register_toolchains()
-
 
 BAZEL_INSTALLER_VERSION_darwin_SHA = "5cfa97031b43432b3c742c80e2e01c41c0acdca7ba1052fc8cf1e291271bc9cd"
 # TODO(jez) Test on linux

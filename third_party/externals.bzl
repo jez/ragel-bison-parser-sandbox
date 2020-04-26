@@ -31,6 +31,7 @@ def sandbox_register_dependencies():
         sha256 = "c67fa9891bb19e9e6c1050003ba648d35383b8cb3c9572f397ad24040fb7f0eb",
     )
 
+    # TODO(jez) Evaluate whether to use flex or not
     http_archive(
       name = "rules_flex",
       urls = ["https://github.com/jmillikin/rules_flex/releases/download/v0.2/rules_flex-v0.2.tar.xz"],
@@ -41,6 +42,14 @@ def sandbox_register_dependencies():
         name = "rules_bison",
         url = "https://github.com/jmillikin/rules_bison/releases/download/v0.2/rules_bison-v0.2.tar.xz",
         sha256 = "6ee9b396f450ca9753c3283944f9a6015b61227f8386893fb59d593455141481",
+    )
+
+    http_archive(
+        name = "bazel-compilation-database",
+        url = "https://github.com/grailbio/bazel-compilation-database/archive/0ae6349c52700f060c9a87c5ed2b04b75f94a26f.zip",
+        sha256 = "40ad122fedbf2d8b23e70e16b5f49c1a316f02db3ed29ce1af8650dad6ccc1a9",
+        build_file_content = '\npackage(default_visibility = ["//visibility:public"])\n' ,
+        strip_prefix = "bazel-compilation-database-0ae6349c52700f060c9a87c5ed2b04b75f94a26f",
     )
 
 
