@@ -1,5 +1,3 @@
-#include <cstring>
-#include <cstdio>
 #include <string>
 #include <vector>
 #include <memory>
@@ -51,33 +49,25 @@ using namespace std;
 
 %% write data;
 
-int main(int argc, char **argv) {
+vector<unique_ptr<Token>> all_tokens(string_view source) {
     vector<unique_ptr<Token>> tokens;
 
-    if (argc > 1) {
-        string_view arg1 = argv[1];
-        int cs = 0;
+    int cs = 0;
 
-        // Used by ragel to keep track of the input
-        auto p = arg1.begin();
-        auto pe = arg1.end();
-        auto eof = arg1.end();
+    // Used by ragel to keep track of the input
+    auto p = source.begin();
+    auto pe = source.end();
+    auto eof = source.end();
 
-        // For accessing the match text from within the actions.
-        auto ts = arg1.begin();
-        auto te = arg1.begin();
+    // For accessing the match text from within the actions.
+    auto ts = source.begin();
+    auto te = source.begin();
 
-        // TODO(jez) why? Something to do with scanners
-        int act = 0;
+    // TODO(jez) why? Something to do with scanners
+    int act = 0;
 
-        %% write init;
-        %% write exec;
-    }
+    %% write init;
+    %% write exec;
 
-    printf("tokens.size() = %lu\n[\n", tokens.size());
-    for (auto &token : tokens) {
-        printf("  %s,\n", token->showRaw().c_str());
-    }
-    printf("]\n");
-    return 0;
+    return tokens;
 }

@@ -8,12 +8,6 @@ ragel(
     language = "c++",
 )
 
-# ragel(
-#     name = "lexer_impl_ragel",
-#     src = "lexer_impl_ragel.rl",
-#     language = "c++",
-# )
-
 # flex(
 #     name = "lexer_impl_flex",
 #     src = "lexer_impl_flex.ll",
@@ -30,6 +24,7 @@ cc_binary(
     name = "lexer_exe",
     srcs = [
         "token.hh",
+        "lexer_exe.cc",
         ":lexer_impl_ragel",
     ],
     copts = [
