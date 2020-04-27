@@ -29,7 +29,8 @@ ragel(
 cc_binary(
     name = "lexer_exe",
     srcs = [
-        ":lexer_impl_ragel"
+        "token.hh",
+        ":lexer_impl_ragel",
     ],
     copts = [
         "-Wno-unused-const-variable",
