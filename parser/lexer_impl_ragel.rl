@@ -2,9 +2,6 @@
 #include <vector>
 #include <memory>
 
-// TODO(jez) For debugging only
-#include <typeinfo>
-
 // TODO(jez) Parser will generate functions to make tokens;
 // need to use them here, instead of our own constructors.
 #include "parser/token.hh"
