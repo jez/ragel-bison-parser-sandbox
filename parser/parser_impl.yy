@@ -24,45 +24,68 @@
 #include "parser/driver.hh"
 }
 
+// TODO(jez) String literal for backslash
 %define api.token.prefix {TOK_}
 %token
-  END  0  "end of file"
-  ASSIGN  ":="
-  MINUS   "-"
-  PLUS    "+"
-  STAR    "*"
-  SLASH   "/"
-  LPAREN  "("
-  RPAREN  ")"
+  BACKSLASH
+  THINARROW "->"
+  LET "let"
+  EQ "="
+  IN "in"
+  TRUE "True"
+  FALSE "False"
+  IF "if"
+  IFZ "ifz"
+  THEN "then"
+  ELSE "else"
+  LPAREN "("
+  RPAREN ")"
 ;
 
-%token <std::string> IDENTIFIER "identifier"
-%token <int> NUMBER "number"
-%nterm <int> exp
 
+%token <std::string> NUMERAL
+%token <std::string> IDENT
+
+// TODO(jez) Add this to form below
+// TODO(jez) This is here so you remember where to update things
+// if you ever add any infix operators.
+// See http://dev.stephendiehl.com/fun/008_extended_parser.html
+
+// TODO(jez) What's up with this? For printing tokens I guess?
 %printer { yyo << $$; } <*>;
 
 %%
-%start unit;
-unit: assignments exp  { drv.result = $2; };
+%start program;
+program: term  { drv.result = std::move($1); };
 
-assignments:
-  %empty                 {}
-| assignments assignment {};
+%nterm <unique_ptr<Node>> term
+term
+  : BACKSLASH ident "->" term
+      { $$ = std::make_unique<sandbox::parser::Lam>(std::move($2), std::move($4)); }
+  | "let" ident "=" term "in" term
+      { $$ = std::make_unique<sandbox::parser::Let>(std::move($2), std::move($4)); }
+  | form { $$ = std::move($1); }
+  ;
 
-assignment:
-  "identifier" ":=" exp { drv.variables[$1] = $3; };
+%nterm <unique_ptr<Node>> form
+form
+  : fact { $$ = std::move($1); }
+  ;
 
-%left "+" "-";
-%left "*" "/";
-exp:
-  "number"
-| "identifier"  { $$ = drv.variables[$1]; }
-| exp "+" exp   { $$ = $1 + $3; }
-| exp "-" exp   { $$ = $1 - $3; }
-| exp "*" exp   { $$ = $1 * $3; }
-| exp "/" exp   { $$ = $1 / $3; }
-| "(" exp ")"   { $$ = $2; }
+%nterm <unique_ptr<Node>> fact
+fact
+  : fact atom
+      { $$ = std::make_unique<sandbox::parser::App>(std::move($1), std::move($2)); }
+  | atom
+      { $$ = std::move($1); }
+  ;
+
+%nterm <unique_ptr<Node>> atom
+atom
+  : "(" term ")" { $$ = std::move($2); }
+  | ident { $$ = std::make_unique<sandbox::parser::Var>($1); }
+  ;
+
 %%
 
 // TODO(jez) locations

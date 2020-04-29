@@ -2,21 +2,18 @@
 
 #include <string>
 #include <map>
+#include <memory>
+#include "parser/node.hh"
 #include "parser/parser_impl.h"
 
-// // Give Flex the prototype of yylex we want ...
-// # define YY_DECL \
-//   yy::parser::symbol_type yylex (driver& drv)
-// // ... and declare it for the parser's sake.
-// YY_DECL;
+namespace sandbox::parser {
 
 // Conducting the whole scanning and parsing of Calc++.
 class driver {
 public:
   driver();
 
-
-  int result;
+  std::unique_ptr<Node> result;
 
   // Run the parser on file F.  Return 0 on success.
   int parse(const std::string_view f);
@@ -32,5 +29,4 @@ public:
   // yy::location location;
 };
 
-int yylex(driver &drv);
-
+}
