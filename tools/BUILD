@@ -11,7 +11,7 @@ compilation_database(
     targets = [
         # BEGIN compile_commands targets
         "//main:sandbox",
-        "//parser:parser",
+        "//parser:lexer_exe",
         # END compile_commands targets
     ],
 )

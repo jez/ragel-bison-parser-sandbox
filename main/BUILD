@@ -11,6 +11,5 @@ cc_binary(
     # TODO(jez) jemalloc conditionally
     visibility = ["//visibility:public"],
     deps = [
-        "//parser",
     ]
 )

@@ -11,8 +11,6 @@
 
 using namespace std;
 
-// main := ( 'foo' | 'bar' ) %eof{ sawFooOrBar = true; };
-
 // TODO(jez) Probably need to do locations myself?
 
 %%{
