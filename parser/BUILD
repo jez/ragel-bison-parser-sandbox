@@ -33,7 +33,7 @@ cc_binary(
         "-Wno-unused-const-variable",
     ],
     visibility = ["//visibility:public"],
-  )
+)
 
 # cc_library(
 #     name = "parser",
