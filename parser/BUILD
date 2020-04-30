@@ -22,8 +22,10 @@ ragel(
 
 cc_binary(
     name = "lexer_exe",
+    # TODO(jez) Eventually just use globs
     srcs = [
         "token.hh",
+        "lexer.hh",
         "lexer_exe.cc",
         ":lexer_impl_ragel",
     ],
