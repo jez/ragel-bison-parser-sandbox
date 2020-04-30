@@ -15,28 +15,28 @@ using namespace std;
 
         "--" . [^\n]+ "\n";
 
-        "\\"    { return make_unique<TokBackslash>(); };
-        "->"    { return make_unique<TokThinArrow>(); };
-        "let"   { return make_unique<TokLet>(); };
-        "="     { return make_unique<TokEq>(); };
-        "in"    { return make_unique<TokIn>(); };
-        "True"  { return make_unique<TokTrue>(); };
-        "False" { return make_unique<TokFalse>(); };
-        "if"    { return make_unique<TokIf>(); };
-        "ifz"   { return make_unique<TokIfz>(); };
-        "then"  { return make_unique<TokThen>(); };
-        "else"  { return make_unique<TokElse>(); };
-        "\("    { return make_unique<TokLParen>(); };
-        "\)"    { return make_unique<TokRParen>(); };
+        "\\"    { return yy::parser::make_BACKSLASH(); };
+        "->"    { return yy::parser::make_THINARROW(); };
+        "let"   { return yy::parser::make_LET(); };
+        "="     { return yy::parser::make_EQ(); };
+        "in"    { return yy::parser::make_IN(); };
+        "True"  { return yy::parser::make_TRUE(); };
+        "False" { return yy::parser::make_FALSE(); };
+        "if"    { return yy::parser::make_IF(); };
+        "ifz"   { return yy::parser::make_IFZ(); };
+        "then"  { return yy::parser::make_THEN(); };
+        "else"  { return yy::parser::make_ELSE(); };
+        "\("    { return yy::parser::make_LPAREN(); };
+        "\)"    { return yy::parser::make_RPAREN(); };
 
         "0"
-            { return make_unique<TokNumeral>("0"); };
+            { return yy::parser::make_NUMERAL("0"); };
 
         [1-9] [0-9]*
-            { return make_unique<TokNumeral>(string(ts, te - ts)); };
+            { return yy::parser::make_NUMERAL(string(ts, te - ts)); };
 
         lower ( alnum | "_" | "'" )*
-            { return make_unique<TokTermIdent>(string(ts, te - ts)); };
+            { return yy::parser::make_IDENT(string(ts, te - ts)); };
     *|;
 }%%
 
@@ -52,9 +52,9 @@ namespace sandbox::parser {
 Lexer::Lexer(string_view source) : source(source), p(source.begin()), pe(source.end()), eof(source.end()),
     cs(expr_start), ts(source.begin()), te(source.begin()), act(0) {}
 
-unique_ptr<Token> Lexer::exec() {
+yy::parser::symbol_type Lexer::exec() {
     %% write exec;
-    return nullptr;
+    return yy::parser::make_EOF();
 }
 
 // From the Ragel docs (Chapter 5):
@@ -73,19 +73,24 @@ unique_ptr<Token> Lexer::exec() {
 // would have advanced the `p` pointer (the next character to read), so we
 // have a helper function that makes sure to advance it ourselves after
 // returning.
-unique_ptr<Token> Lexer::next() {
+yy::parser::symbol_type Lexer::next() {
     auto result = this->exec();
     this->p++;
     return result;
 }
 
-vector<unique_ptr<Token>> Lexer::allTokens() {
-    vector<unique_ptr<Token>> result;
+vector<yy::parser::symbol_type> Lexer::allTokens() {
+    vector<yy::parser::symbol_type> result;
 
-    // TODO(jez) Do we need to do something to figure out when we're done?
-    while (auto it = next()) {
-        result.emplace_back(move(it));
-    }
+    // // TODO(jez) Do we need to do something to figure out when we're done?
+    // // TODO(jez) Implement with parser-generated tokens
+    // while (true) {
+    //     auto it = next();
+    //     if (it.token() == yy::parser::symbol_type::token::TOK_EOF()) {
+    //         break;
+    //     }
+    //     result.emplace_back(move(it));
+    // }
 
     return result;
 }

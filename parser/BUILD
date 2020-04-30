@@ -14,11 +14,11 @@ ragel(
 #     flex_options = [],
 # )
 
-# bison(
-#     name = "parser_impl",
-#     src = "parser_impl.yy",
-#     bison_options = [],
-# )
+bison(
+    name = "parser_impl",
+    src = "parser_impl.yy",
+    bison_options = [],
+)
 
 cc_binary(
     name = "lexer_exe",
@@ -29,6 +29,24 @@ cc_binary(
         "lexer_exe.cc",
         ":lexer_impl_ragel",
     ],
+    copts = [
+        "-Wno-unused-const-variable",
+    ],
+    visibility = ["//visibility:public"],
+)
+
+cc_library(
+    name = "parser",
+    srcs = [
+        "token.hh",
+        "lexer.hh",
+        ":lexer_impl_ragel",
+        "node.hh",
+        "driver.hh",
+        "driver.cc",
+        ":parser_impl",
+    ],
+#     hdrs = glob(["*.h", "*.hh"]),
     copts = [
         "-Wno-unused-const-variable",
     ],

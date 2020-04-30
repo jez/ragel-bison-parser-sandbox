@@ -1,10 +1,11 @@
+#pragma once
+
 #include <string>
 #include <vector>
 #include <memory>
 
-// TODO(jez) Parser will generate functions to make tokens;
-// need to use them here, instead of our own constructors.
-#include "parser/token.hh"
+// To define factory methods that make tokens
+#include "parser/parser_impl.h"
 
 namespace sandbox::parser {
 
@@ -23,13 +24,13 @@ private:
 
     int act;
 
-    std::unique_ptr<Token> exec();
+    yy::parser::symbol_type exec();
 
 public:
     Lexer(std::string_view source);
 
-    std::unique_ptr<Token> next();
-    std::vector<std::unique_ptr<Token>> allTokens();
+    yy::parser::symbol_type next();
+    std::vector<yy::parser::symbol_type> allTokens();
 };
 
 }

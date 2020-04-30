@@ -7,14 +7,16 @@
 %define parse.assert
 
 %code requires {
-  #include <string>
-  class driver;
+#include "parser/node.hh"
+namespace sandbox::parser {
+class Driver;
+}
 }
 
-// The parsing context.
-%param { driver& drv }
+// TODO(jez) Which namespace should we be using?
+%param { sandbox::parser::Driver &driver }
 
-// TODO(jez) locations?
+// TODO(jez) locations
 // %locations
 
 %define parse.trace
@@ -22,11 +24,14 @@
 
 %code {
 #include "parser/driver.hh"
+// TODO(jez) Is this %code block needed?
+yy::parser::symbol_type yylex(sandbox::parser::Driver &driver);
 }
 
 // TODO(jez) String literal for backslash
 %define api.token.prefix {TOK_}
 %token
+  EOF 0 "end of file"
   BACKSLASH
   THINARROW "->"
   LET "let"
@@ -55,24 +60,24 @@
 %printer { yyo << $$; } <*>;
 
 %%
-%start program;
-program: term  { drv.result = std::move($1); };
+%start result;
+result: term  { driver.result = std::move($1); };
 
-%nterm <unique_ptr<Node>> term
+%nterm <std::unique_ptr<sandbox::parser::Node>> term;
 term
-  : BACKSLASH ident "->" term
+  : BACKSLASH IDENT "->" term
       { $$ = std::make_unique<sandbox::parser::Lam>(std::move($2), std::move($4)); }
-  | "let" ident "=" term "in" term
-      { $$ = std::make_unique<sandbox::parser::Let>(std::move($2), std::move($4)); }
+  | "let" IDENT "=" term "in" term
+      { $$ = std::make_unique<sandbox::parser::Let>($2, std::move($4), std::move($6)); }
   | form { $$ = std::move($1); }
   ;
 
-%nterm <unique_ptr<Node>> form
+%nterm <std::unique_ptr<sandbox::parser::Node>> form;
 form
   : fact { $$ = std::move($1); }
   ;
 
-%nterm <unique_ptr<Node>> fact
+%nterm <std::unique_ptr<sandbox::parser::Node>> fact;
 fact
   : fact atom
       { $$ = std::make_unique<sandbox::parser::App>(std::move($1), std::move($2)); }
@@ -80,10 +85,10 @@ fact
       { $$ = std::move($1); }
   ;
 
-%nterm <unique_ptr<Node>> atom
+%nterm <std::unique_ptr<sandbox::parser::Node>> atom;
 atom
   : "(" term ")" { $$ = std::move($2); }
-  | ident { $$ = std::make_unique<sandbox::parser::Var>($1); }
+  | IDENT { $$ = std::make_unique<sandbox::parser::Var>($1); }
   ;
 
 %%
@@ -94,3 +99,21 @@ void yy::parser::error (const std::string& m) {
   // std::cerr << l << ": " << m << '\n';
   std::cerr << ": " << m << '\n';
 }
+
+yy::parser::symbol_type yylex(sandbox::parser::Driver &driver) {
+    return driver.lexer.next();
+}
+
+// int driver::parse(const std::string &f) {
+//   file = f;
+//   // TODO(jez) locations
+//   // location.initialize (&file);
+//   scan_begin ();
+//   // TODO(jez) Is there any way to make this non-void? Otherwise, we'll need to have an out param and a driver context.
+//   yy::parser parse (*this);
+//   parse.set_debug_level (trace_parsing);
+//   int res = parse ();
+//   scan_end ();
+//   return res;
+// }
+
