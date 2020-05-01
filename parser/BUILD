@@ -24,7 +24,7 @@ cc_library(
         "-Wno-unused-const-variable",
     ],
     deps = [
-        "//core"
+        "//core",
     ],
     visibility = ["//visibility:public"],
 )

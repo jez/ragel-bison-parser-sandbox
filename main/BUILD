@@ -1,7 +1,7 @@
 cc_binary(
     name = "sandbox",
     srcs = [
-        "main.cc"
+        "main.cc",
     ],
     # TODO(jez) linkstatic conditionally
     # linkstatic = select({
@@ -11,6 +11,6 @@ cc_binary(
     # TODO(jez) jemalloc conditionally
     visibility = ["//visibility:public"],
     deps = [
-        "//parser"
-    ]
+        "//parser",
+    ],
 )

@@ -1,5 +1,13 @@
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive", "http_file")
 
+# TODO(jez) Useful common dependencies
+# TODO(jez) BUILD formatters
+# TODO(jez) C/C++ formatters
+# TODO(jez) compile_commands.json
+# TODO(jez) jemalloc
+# TODO(jez) rapidjson
+# TODO(jez) pdqsort
+
 # We define our externals here instead of directly in WORKSPACE so that
 # libraries can pin to our versions.
 def sandbox_register_dependencies():
@@ -47,13 +55,4 @@ def sandbox_register_dependencies():
 
 
 
-
-    # TODO(jez) Useful common dependencies
-    # TODO(jez) BUILD formatters
-    # TODO(jez) C/C++ formatters
-    # TODO(jez) compile_commands.json
-    # TODO(jez) jemalloc
-    # TODO(jez) spdlog / fmt
-    # TODO(jez) rapidjson
-    # TODO(jez) pdqsort
 

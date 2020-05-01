@@ -1,14 +1,13 @@
 # ---- Global C/C++ build options ---------------------------------------------
-# TODO(jez) Can you move these into WORKSPACE?
 
+build --crosstool_top=@llvm_toolchain//:toolchain
 build --cxxopt=-std=c++17 --host_cxxopt=-std=c++17
+build --copt=-D_LIBCPP_ENABLE_NODISCARD
 build --copt=-fno-omit-frame-pointer
 build --copt=-fstack-protector
 build --copt=-Werror --copt=-Wimplicit-fallthrough
 
-# ----- debug -----------------------------------------------------------------
-
-# TODO(jez) Make something like --config=dbg
+# ----- other -----------------------------------------------------------------
 
 ### Debug symbols on OS X. ###
 # From https://github.com/RobotLocomotion/drake/blob/master/tools/cc_toolchain/bazel.rc
@@ -17,3 +16,7 @@ build:debugsymbols --copt=-g3 --copt=-fstandalone-debug --copt=-DDEBUG_SYMBOLS -
 build:debugsymbols --linkopt=-g3 --linkopt=-fstandalone-debug --linkopt=-DDEBUG_SYMBOLS --linkopt=-glldb
 build:debugsymbols --spawn_strategy=standalone
 build:debugsymbols --genrule_strategy=standalone
+
+# TODO(jez) debug configuration
+# TODO(jez) static linking configuration
+# TODO(jez) release configuration
