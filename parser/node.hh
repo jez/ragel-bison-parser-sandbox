@@ -7,7 +7,6 @@ namespace sandbox::parser {
 
 class Node {
 public:
-    // TODO(jez) showRaw
     virtual ~Node() = default;
 
     // TODO(jez) fmt-ify
@@ -16,7 +15,7 @@ public:
 
 class Var : public Node {
 public:
-    Var(std::string var) : var(var) {};
+    Var(std::string &&var) : var(std::move(var)) {};
 
     std::string var;
 
@@ -39,7 +38,7 @@ public:
 
 class Lam : public Node {
 public:
-    Lam(std::string param, std::unique_ptr<Node> body) : param(std::move(param)), body(std::move(body)) {}
+    Lam(std::string &&param, std::unique_ptr<Node> body) : param(std::move(param)), body(std::move(body)) {}
 
     std::string param;
     std::unique_ptr<Node> body;
@@ -51,8 +50,8 @@ public:
 
 class Let : public Node {
 public:
-    // TODO(jez) Take ownership of string, don't copy
-    Let(std::string bind, std::unique_ptr<Node> what, std::unique_ptr<Node> inWhere) : bind(bind), what(std::move(what)), inWhere(std::move(inWhere)) {}
+    Let(std::string &&bind, std::unique_ptr<Node> what, std::unique_ptr<Node> inWhere) : bind(std::move(bind)),
+        what(std::move(what)), inWhere(std::move(inWhere)) {}
 
     std::string bind;
     std::unique_ptr<Node> what;

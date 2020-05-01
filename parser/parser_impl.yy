@@ -68,7 +68,7 @@ term
   : BACKSLASH IDENT "->" term
       { $$ = std::make_unique<sandbox::parser::Lam>(std::move($2), std::move($4)); }
   | "let" IDENT "=" term "in" term
-      { $$ = std::make_unique<sandbox::parser::Let>($2, std::move($4), std::move($6)); }
+      { $$ = std::make_unique<sandbox::parser::Let>(std::move($2), std::move($4), std::move($6)); }
   | form { $$ = std::move($1); }
   ;
 
@@ -88,7 +88,7 @@ fact
 %nterm <std::unique_ptr<sandbox::parser::Node>> atom;
 atom
   : "(" term ")" { $$ = std::move($2); }
-  | IDENT { $$ = std::make_unique<sandbox::parser::Var>($1); }
+  | IDENT { $$ = std::make_unique<sandbox::parser::Var>(std::move($1)); }
   ;
 
 %%
