@@ -37,18 +37,9 @@ yy::parser::symbol_type yylex(sandbox::parser::Driver &driver);
   LET "let"
   EQ "="
   IN "in"
-  TRUE "True"
-  FALSE "False"
-  IF "if"
-  IFZ "ifz"
-  THEN "then"
-  ELSE "else"
   LPAREN "("
   RPAREN ")"
 ;
-
-
-%token <std::string> NUMERAL
 %token <std::string> IDENT
 
 // TODO(jez) Add this to form below

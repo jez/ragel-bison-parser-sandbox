@@ -20,20 +20,8 @@ using namespace std;
         "let"   { return yy::parser::make_LET(); };
         "="     { return yy::parser::make_EQ(); };
         "in"    { return yy::parser::make_IN(); };
-        "True"  { return yy::parser::make_TRUE(); };
-        "False" { return yy::parser::make_FALSE(); };
-        "if"    { return yy::parser::make_IF(); };
-        "ifz"   { return yy::parser::make_IFZ(); };
-        "then"  { return yy::parser::make_THEN(); };
-        "else"  { return yy::parser::make_ELSE(); };
         "\("    { return yy::parser::make_LPAREN(); };
         "\)"    { return yy::parser::make_RPAREN(); };
-
-        "0"
-            { return yy::parser::make_NUMERAL("0"); };
-
-        [1-9] [0-9]*
-            { return yy::parser::make_NUMERAL(string(ts, te - ts)); };
 
         lower ( alnum | "_" | "'" )*
             { return yy::parser::make_IDENT(string(ts, te - ts)); };
