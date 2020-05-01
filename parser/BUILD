@@ -23,5 +23,8 @@ cc_library(
     copts = [
         "-Wno-unused-const-variable",
     ],
+    deps = [
+        "//core"
+    ],
     visibility = ["//visibility:public"],
 )

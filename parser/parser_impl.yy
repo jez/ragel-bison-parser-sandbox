@@ -5,8 +5,10 @@
 %define parse.assert
 
 %code requires {
-// This code lives in the generated hh file (interface)
+// This code lives in parser_impl.hh.
+// Since the Lexer also includes parser_impl.hh, these includes are visible there too.
 
+#include "core/location.hh"
 #include "parser/node.hh"
 
 namespace sandbox::parser {
@@ -20,18 +22,35 @@ namespace sandbox::parser {
 
 %param { sandbox::parser::Driver &driver }
 
-// TODO(jez) locations
-// %locations
+%locations
+%define api.location.type {sandbox::core::Range}
 
 // TODO(jez) Document this option
 %define parse.error verbose
 
 %code {
-// This code lives in the generated cc file (implementation)
+// This code lives in the generated cc file (implementation), not the header.
 
 #include "parser/driver.hh"
 
 yy::parser::symbol_type yylex(sandbox::parser::Driver &driver);
+
+// TODO(jez) Comment in your own words
+// YYLLOC_DEFAULT -- Set CURRENT to span from RHS[1] to RHS[N].
+// If N is 0, then set CURRENT to the empty location which ends
+// the previous symbol: RHS[0] (always defined).
+#define YYLLOC_DEFAULT(Current, Rhs, N)                                 \
+    do                                                                  \
+      if (N)                                                            \
+        {                                                               \
+          (Current).start  = YYRHSLOC(Rhs, 1).start;                    \
+          (Current).end    = YYRHSLOC(Rhs, N).end;                      \
+        }                                                               \
+      else                                                              \
+        {                                                               \
+          (Current).start = (Current).end = YYRHSLOC(Rhs, 0).end;       \
+        }                                                               \
+    while (false);
 }
 
 // TODO(jez) Document these options
@@ -52,9 +71,9 @@ yy::parser::symbol_type yylex(sandbox::parser::Driver &driver);
 ;
 %token <std::string> IDENT
 
-// When tracing the parser, the parser will print tokens and reduced intermediates.
-%define parse.trace
 // TODO(jez) Try tracing the parser once
+// When tracing the parser, the parser will print tokens and reduced intermediates.
+// %define parse.trace
 // %printer { yyo << $$; } <*>;
 
 %%
@@ -70,8 +89,7 @@ term
   | form { $$ = std::move($1); }
   ;
 
-// TODO(jez) This is here so you remember where to update things
-// if you ever add any infix operators.
+// This is here so you remember where to update things if you ever add any infix operators.
 // See http://dev.stephendiehl.com/fun/008_extended_parser.html
 %nterm <std::unique_ptr<sandbox::parser::Node>> form;
 form
@@ -94,11 +112,8 @@ atom
 
 %%
 
-// TODO(jez) locations
-// void yy::parser::error (const location_type& l, const std::string& m) {
-void yy::parser::error (const std::string& m) {
-  // std::cerr << l << ": " << m << '\n';
-  std::cerr << ": " << m << '\n';
+void yy::parser::error (const sandbox::core::Range& l, const std::string& m) {
+  std::cerr << "Range { start = " << l.start << ", end = " << l.end << " }: " << m << '\n';
 }
 
 yy::parser::symbol_type yylex(sandbox::parser::Driver &driver) {

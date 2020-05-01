@@ -2,7 +2,6 @@
 
 #include <string>
 
-// Defines factory methods that make tokens for the parser.
 #include "parser/parser_impl.h"
 
 namespace sandbox::parser {
@@ -53,6 +52,9 @@ private:
     //
     // Mnemonic: ???
     int act;
+
+    // Uses the start and end of the current token relative to the start of the source
+    core::Range tokenRange() const;
 
     // From the Ragel docs (Chapter 5):
     //
