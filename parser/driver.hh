@@ -11,8 +11,9 @@ class Driver {
 private:
     // TODO(jez) Probably eventually want to take in a FileRef
     std::string_view source;
+
 public:
-    Driver(std::string_view source);
+    Driver(std::string_view source) : source(source), lexer(Lexer(source)) {}
 
     // Maintains the lexer machine's current state.
     Lexer lexer;
