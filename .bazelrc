@@ -1,5 +1,12 @@
-# TODO(jez) Can you move this into WORKSPACE?
+# ---- Global C/C++ build options ---------------------------------------------
+# TODO(jez) Can you move these into WORKSPACE?
+
 build --cxxopt=-std=c++17 --host_cxxopt=-std=c++17
+build --copt=-fno-omit-frame-pointer
+build --copt=-fstack-protector
+build --copt=-Werror --copt=-Wimplicit-fallthrough
+
+# ----- debug -----------------------------------------------------------------
 
 # TODO(jez) Make something like --config=dbg
 
