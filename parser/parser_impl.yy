@@ -2,36 +2,46 @@
 %require "3.3.2"
 %defines
 
-%define api.token.constructor
-%define api.value.type variant
 %define parse.assert
 
 %code requires {
+// This code lives in the generated hh file (interface)
+
 #include "parser/node.hh"
+
 namespace sandbox::parser {
-class Driver;
-}
+    // Lexer.hh depends on parser_impl.hh for token helpers.
+    // Driver.hh depends on Lexer.hh because it manages a Lexer instance.
+    // So parser_impl.hh can't depend on Driver.hh, which means we need to forward declare it.
+    class Driver;
 }
 
-// TODO(jez) Which namespace should we be using?
+}
+
 %param { sandbox::parser::Driver &driver }
 
 // TODO(jez) locations
 // %locations
 
-%define parse.trace
+// TODO(jez) Document this option
 %define parse.error verbose
 
 %code {
+// This code lives in the generated cc file (implementation)
+
 #include "parser/driver.hh"
-// TODO(jez) Is this %code block needed?
+
 yy::parser::symbol_type yylex(sandbox::parser::Driver &driver);
 }
 
+// TODO(jez) Document these options
+%define api.token.constructor
+%define api.value.type variant
 // TODO(jez) String literal for backslash
 %define api.token.prefix {TOK_}
+// The token with value 0 is special, and denotes the end of the token stream.
+%token EOF 0 "end of file"
 %token
-  EOF 0 "end of file"
   BACKSLASH
   THINARROW "->"
   LET "let"
@@ -42,13 +52,10 @@ yy::parser::symbol_type yylex(sandbox::parser::Driver &driver);
 ;
 %token <std::string> IDENT
 
-// TODO(jez) Add this to form below
-// TODO(jez) This is here so you remember where to update things
-// if you ever add any infix operators.
-// See http://dev.stephendiehl.com/fun/008_extended_parser.html
-
-// TODO(jez) What's up with this? For printing tokens I guess?
-%printer { yyo << $$; } <*>;
+// When tracing the parser, the parser will print tokens and reduced intermediates.
+%define parse.trace
+// TODO(jez) Try tracing the parser once
+// %printer { yyo << $$; } <*>;
 
 %%
 %start result;
@@ -63,6 +70,9 @@ term
   | form { $$ = std::move($1); }
   ;
 
+// TODO(jez) This is here so you remember where to update things
+// if you ever add any infix operators.
+// See http://dev.stephendiehl.com/fun/008_extended_parser.html
 %nterm <std::unique_ptr<sandbox::parser::Node>> form;
 form
   : fact { $$ = std::move($1); }
