@@ -103,17 +103,3 @@ void yy::parser::error (const std::string& m) {
 yy::parser::symbol_type yylex(sandbox::parser::Driver &driver) {
     return driver.lexer.next();
 }
-
-// int driver::parse(const std::string &f) {
-//   file = f;
-//   // TODO(jez) locations
-//   // location.initialize (&file);
-//   scan_begin ();
-//   // TODO(jez) Is there any way to make this non-void? Otherwise, we'll need to have an out param and a driver context.
-//   yy::parser parse (*this);
-//   parse.set_debug_level (trace_parsing);
-//   int res = parse ();
-//   scan_end ();
-//   return res;
-// }
-
