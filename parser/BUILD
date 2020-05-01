@@ -19,7 +19,7 @@ cc_library(
         ":lexer",
         ":parser_impl",
     ],
-#     hdrs = glob(["*.h", "*.hh"]),
+    hdrs = glob(["parser.hh"]),
     copts = [
         "-Wno-unused-const-variable",
     ],

@@ -1,34 +1,25 @@
 #include <iostream>
 
-#include "parser/driver.hh"
-// TODO(jez) Make a proper public interface for the parser
-#include "parser/parser_impl.h"
+#include "parser/parser.hh"
 
 using namespace std;
 
 int main(int argc, char *argv[]) {
-    cout << "Hello, world!" << endl;
-
     if (argc != 2) {
-        printf("usage: sandbox <program>");
+        cout << "usage: sandbox <program>" << endl;
         return 1;
     }
 
     string_view source = argv[1];
+    cout << "input:  " << source << endl;
 
-    sandbox::parser::Driver driver(source);
-
-    yy::parser parse(driver);
-    auto error = parse();
-
-    if (error != 0) {
-        printf("TODO(jez) error message\n");
-        return error;
+    auto result = sandbox::parser::parse(source);
+    if (result == nullptr) {
+        cout << "TODO(jez) error message when parse failed" << endl;
+        return 1;
     }
 
-    auto result = std::move(driver.result);
-
-    printf("%s\n", result->showRaw().c_str());
+    cout << "output: " << result->showRaw() << endl;
 
     return 0;
 }
