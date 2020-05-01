@@ -57,41 +57,9 @@ yy::parser::symbol_type Lexer::exec() {
     return yy::parser::make_EOF();
 }
 
-// From the Ragel docs (Chapter 5):
-//
-// > The Ragel code generator is very flexible. The generated code has no
-// > dependencies and can be inserted in any function, perhaps inside a
-// > loop if desired. The user is responsible for declaring and
-// > initializing a number of required variables, including the current
-// > state and the pointer to the input stream. These can live in any
-// > scope. Control of the input processing loop is also possible: the user
-// > may break out of the processing loop and return to it at any time.
-//
-// We take advantage of this: the `return` that we've written in the Ragel
-// actions returns from where the `%% write exec;` was written. The problem
-// is that if we return early, it happens before the Ragel processing loop
-// would have advanced the `p` pointer (the next character to read), so we
-// have a helper function that makes sure to advance it ourselves after
-// returning.
 yy::parser::symbol_type Lexer::next() {
     auto result = this->exec();
     this->p++;
-    return result;
-}
-
-vector<yy::parser::symbol_type> Lexer::allTokens() {
-    vector<yy::parser::symbol_type> result;
-
-    // // TODO(jez) Do we need to do something to figure out when we're done?
-    // // TODO(jez) Implement with parser-generated tokens
-    // while (true) {
-    //     auto it = next();
-    //     if (it.token() == yy::parser::symbol_type::token::TOK_EOF()) {
-    //         break;
-    //     }
-    //     result.emplace_back(move(it));
-    // }
-
     return result;
 }
 
