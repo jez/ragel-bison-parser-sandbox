@@ -34,8 +34,8 @@ public:
     // 0-indexed character offset into file source contents, exclusive
     uint32_t end;
 
-    Range() : start(INVALID_OFFSET), end(INVALID_OFFSET) {}
-    Range(uint32_t start, uint32_t end) : start(start), end(end) {}
+    Range();
+    Range(uint32_t start, uint32_t end);
 
     bool exists() {
         return start != INVALID_OFFSET && end != INVALID_OFFSET;
