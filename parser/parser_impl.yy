@@ -36,21 +36,19 @@ namespace sandbox::parser {
 yy::parser::symbol_type yylex(sandbox::parser::Driver &driver);
 
 // TODO(jez) Comment in your own words
-// YYLLOC_DEFAULT -- Set CURRENT to span from RHS[1] to RHS[N].
-// If N is 0, then set CURRENT to the empty location which ends
+// YYLLOC_DEFAULT -- Set Current to span from RHS[1] to RHS[N].
+// If N is 0, then set Current to the empty location which ends
 // the previous symbol: RHS[0] (always defined).
 #define YYLLOC_DEFAULT(Current, Rhs, N)                                 \
-    do                                                                  \
-      if (N)                                                            \
-        {                                                               \
+    do {                                                                \
+      if (N) {                                                          \
           (Current).start  = YYRHSLOC(Rhs, 1).start;                    \
           (Current).end    = YYRHSLOC(Rhs, N).end;                      \
-        }                                                               \
-      else                                                              \
-        {                                                               \
+      }                                                                 \
+      else {                                                            \
           (Current).start = (Current).end = YYRHSLOC(Rhs, 0).end;       \
-        }                                                               \
-    while (false);
+      }                                                                 \
+    } while (false);
 }
 
 // TODO(jez) Document these options
@@ -113,7 +111,8 @@ atom
 %%
 
 void yy::parser::error (const sandbox::core::Range& l, const std::string& m) {
-  std::cerr << "Range { start = " << l.start << ", end = " << l.end << " }: " << m << '\n';
+    // TODO(jez) Make this a method on Range, use fmt
+    std::cerr << "Range { start = " << l.start << ", end = " << l.end << " }: " << m << '\n';
 }
 
 yy::parser::symbol_type yylex(sandbox::parser::Driver &driver) {
