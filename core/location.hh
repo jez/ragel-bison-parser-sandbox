@@ -10,7 +10,6 @@
 //
 // https://microsoft.github.io/language-server-protocol/specification.html#position
 
-// TODO(jez) Why doesn't compile_commands.json see this as C++17?
 namespace sandbox::core {
 
 class Position {
@@ -25,8 +24,10 @@ public:
 // word (Ranges are far more commonly manipulated and copied than Locations
 // are).
 class Range {
-public:
+private:
     constexpr static uint32_t INVALID_OFFSET = UINT32_MAX;
+
+public:
 
     // 0-indexed character offset into file source contents, inclusive
     uint32_t start;
@@ -34,12 +35,17 @@ public:
     // 0-indexed character offset into file source contents, exclusive
     uint32_t end;
 
+    // Builds a Range for which Range::exists() is false.
+    //
+    // We prefer this over using something like std::optional because we want to guarantee that
+    // Range fits in a single machine word.
     Range();
+
+    // Builds a Range that exists.
     Range(uint32_t start, uint32_t end);
 
-    bool exists() {
-        return start != INVALID_OFFSET && end != INVALID_OFFSET;
-    }
+    // Checks whether this Range actually exists
+    bool exists() const;
 };
 
 class Location {
