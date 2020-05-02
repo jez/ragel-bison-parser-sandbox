@@ -1,4 +1,4 @@
-#include <iostream>
+#include "spdlog/spdlog.h"
 
 #include "parser/parser.hh"
 
@@ -6,20 +6,20 @@ using namespace std;
 
 int main(int argc, char *argv[]) {
     if (argc != 2) {
-        cout << "usage: sandbox <program>" << endl;
+        fmt::print("usage: sandbox <program>\n");
         return 1;
     }
 
     string_view source = argv[1];
-    cout << "input:  " << source << endl;
+    fmt::print("input:  {}\n", source);
 
     auto result = sandbox::parser::parse(source);
     if (result == nullptr) {
-        cout << "TODO(jez) error message when parse failed" << endl;
+        fmt::print("TODO(jez) error message when parse failed\n");
         return 1;
     }
 
-    cout << "output: " << result->showRaw() << endl;
+    fmt::print("output: {}\n", result->showRaw());
 
     return 0;
 }

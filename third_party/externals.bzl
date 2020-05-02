@@ -26,6 +26,14 @@ def sandbox_register_dependencies():
     )
 
     http_archive(
+        name = "spdlog",
+        url = "https://github.com/gabime/spdlog/archive/c2b47430fb210c8822177407b9e4b82d4ef7455d.zip",  # v1.3.1
+        sha256 = "08b7e0f1d7c62a56dfbac5678979967690ccd9e074acd3762a2a49d8731961e6",
+        build_file = "@io_jez_sandbox//third_party:spdlog.BUILD",
+        strip_prefix = "spdlog-c2b47430fb210c8822177407b9e4b82d4ef7455d",
+    )
+
+    http_archive(
         name = "rules_ragel",
         url = "https://github.com/jmillikin/rules_ragel/archive/f99f17fcad2e155646745f4827ac636a3b5d4d15.zip",
         sha256 = "f957682c6350b2e4484c433c7f45d427a86de5c8751a0d2a9836f36995fe0320",
