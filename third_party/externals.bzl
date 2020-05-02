@@ -1,9 +1,7 @@
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive", "http_file")
 
-# TODO(jez) Useful common dependencies
 # TODO(jez) BUILD formatters
 # TODO(jez) C/C++ formatters
-# TODO(jez) compile_commands.json
 # TODO(jez) jemalloc
 # TODO(jez) rapidjson
 # TODO(jez) pdqsort
