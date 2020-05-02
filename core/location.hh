@@ -46,6 +46,8 @@ public:
 
     // Checks whether this Range actually exists
     bool exists() const;
+
+    std::string showRaw() const;
 };
 
 class Location {

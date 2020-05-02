@@ -110,9 +110,8 @@ atom
 
 %%
 
-void yy::parser::error (const sandbox::core::Range& l, const std::string& m) {
-    // TODO(jez) Make this a method on Range, use fmt
-    std::cerr << "Range { start = " << l.start << ", end = " << l.end << " }: " << m << '\n';
+void yy::parser::error (const sandbox::core::Range& range, const std::string& m) {
+    std::cerr << range.showRaw() << ": " << m << '\n';
 }
 
 yy::parser::symbol_type yylex(sandbox::parser::Driver &driver) {

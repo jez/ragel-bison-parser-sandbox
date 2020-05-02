@@ -3,4 +3,7 @@ cc_library(
     srcs = glob(["*.hh", "*.cc"]),
     hdrs = glob(["*.hh"]),
     visibility = ["//visibility:public"],
+    deps = [
+        "@spdlog",
+    ],
 )
