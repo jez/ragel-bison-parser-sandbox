@@ -3,13 +3,14 @@
 #include <string>
 #include <memory>
 
+#include "spdlog/fmt/fmt.h"
+
 namespace sandbox::parser {
 
 class Node {
 public:
     virtual ~Node() = default;
 
-    // TODO(jez) fmt-ify
     virtual std::string showRaw() = 0;
 };
 
@@ -20,7 +21,7 @@ public:
     std::string var;
 
     std::string showRaw() {
-        return "Var { var = " + this->var + " }";
+        return fmt::format("Var {{ var = {} }}", this->var);
     }
 };
 
@@ -32,7 +33,7 @@ public:
     std::unique_ptr<Node> arg;
 
     std::string showRaw() {
-        return "App { f = " + this->f->showRaw() + ", arg = " + this->arg->showRaw() + " }";
+        return fmt::format("App {{ f = {}, arg = {} }}", this->f->showRaw(), this->arg->showRaw());
     }
 };
 
@@ -44,7 +45,7 @@ public:
     std::unique_ptr<Node> body;
 
     std::string showRaw() {
-        return "Lam { param = " + this->param + ", body = " + this->body->showRaw() + " }";
+        return fmt::format("Lam {{ param = {}, body = {} }}", this->param, this->body->showRaw());
     }
 };
 
@@ -58,7 +59,7 @@ public:
     std::unique_ptr<Node> inWhere;
 
     std::string showRaw() {
-        return "Let { bind = " + this->bind + ", what = " + this->what->showRaw() + ", inWhere = " + this->inWhere->showRaw() + " }";
+        return fmt::format("Let {{ bind = {}, what = {}, inWhere = {} }}", this->bind, this->what->showRaw(), this->inWhere->showRaw());
     }
 };
 
