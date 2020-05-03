@@ -20,3 +20,6 @@ string Range::showRaw() const {
 
 }
 
+std::ostream& operator<<(std::ostream& out, const sandbox::core::Range& r) {
+    return out << "Range { start = " << r.start << ", end = " << r.end << " }";
+}

@@ -46,9 +46,6 @@ namespace sandbox::parser {
 // Give a message to yy:parser::error describing the parse failure.
 // (Only other option is to make the message just "syntax error")
 %define parse.error verbose
-// TODO(jez) Why is this complaining
-// Lookahead correction (improves the accuracy of error messages)
-%define parse.lac full
 
 // When tracing the parser, the parser will print tokens and reduced intermediates.
 %define parse.trace
@@ -76,13 +73,6 @@ namespace sandbox::parser {
 yy::parser::symbol_type yylex(sandbox::parser::Driver &driver) {
     return driver.lexer.next();
 }
-
-// Required for use with %define parse.trace
-// For some reason, I got dynamic linker errors when I had this in location.cc.
-std::ostream& operator<<(std::ostream& out, const sandbox::core::Range& r) {
-    return out << "Range { start = " << r.start << ", end = " << r.end << " }";
-}
-
 
 // Say how to default initialize the location that bison tracks for a
 // non-terminal. (Can be customized by using @$ and @<n> in each action.)

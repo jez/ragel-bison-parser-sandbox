@@ -3,6 +3,7 @@
 #include <cstdint>
 #include <string_view>
 
+#include <iostream>
 
 // The names of these abstractions correspond to the LSP spec's interface
 // definitions, with an important difference that lines and characters are
@@ -60,3 +61,6 @@ public:
 };
 
 }
+
+// Required for use with %define parse.trace
+std::ostream& operator<<(std::ostream& out, const sandbox::core::Range& r);
