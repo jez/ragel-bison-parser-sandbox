@@ -25,8 +25,11 @@ namespace sandbox::parser {
 %locations
 %define api.location.type {sandbox::core::Range}
 
-// TODO(jez) Document this option
+// Give a message to yy:parser::error describing the parse failure.
+// (Only other option is to make the message just "syntax error")
 %define parse.error verbose
+// Lookahead correction (improves the accuracy of error messages)
+%define parse.lac full
 
 %code {
 // This code lives in the generated cc file (implementation), not the header.
@@ -35,10 +38,13 @@ namespace sandbox::parser {
 
 yy::parser::symbol_type yylex(sandbox::parser::Driver &driver);
 
-// TODO(jez) Comment in your own words
-// YYLLOC_DEFAULT -- Set Current to span from RHS[1] to RHS[N].
-// If N is 0, then set Current to the empty location which ends
-// the previous symbol: RHS[0] (always defined).
+// Say how to default initialize the location that bison tracks for a
+// non-terminal. (Can be customized by using @$ and @<n> in each action.)
+// Since we've specified api.location.type, Current is a Range.
+//
+// Default action is to set Current to span from RHS[1] to RHS[N]. If N is 0,
+// then set Current to the empty location which ends the previous symbol:
+// RHS[0] (always defined).
 #define YYLLOC_DEFAULT(Current, Rhs, N)                                 \
     do {                                                                \
       if (N) {                                                          \
@@ -51,15 +57,23 @@ yy::parser::symbol_type yylex(sandbox::parser::Driver &driver);
     } while (false);
 }
 
-// TODO(jez) Document these options
-%define api.token.constructor
+// Use bison's internal std::variant-esque data structure to model the token
+// type (instead of just an int or a C union).
 %define api.value.type variant
-// TODO(jez) String literal for backslash
+
+// Request that bison generate the type safe make_FOO-style token constructors.
+%define api.token.constructor
+
+// Adds a prefix to the generated C++ enum for tokens. Doesn't really affect
+// us, because it's omitted when referencing tokens in the grammar below and
+// also when calling the make_FOO constructors.
 %define api.token.prefix {TOK_}
+
 // The token with value 0 is special, and denotes the end of the token stream.
 %token EOF 0 "end of file"
+
 %token
-  BACKSLASH
+  BACKSLASH "\\"
   THINARROW "->"
   LET "let"
   EQ "="
@@ -67,6 +81,8 @@ yy::parser::symbol_type yylex(sandbox::parser::Driver &driver);
   LPAREN "("
   RPAREN ")"
 ;
+
+// IDENT token owns a string
 %token <std::string> IDENT
 
 // TODO(jez) Try tracing the parser once
@@ -80,7 +96,7 @@ result: term  { driver.result = std::move($1); };
 
 %nterm <std::unique_ptr<sandbox::parser::Node>> term;
 term
-  : BACKSLASH IDENT "->" term
+  : "\\" IDENT "->" term
       { $$ = std::make_unique<sandbox::parser::Lam>(std::move($2), std::move($4)); }
   | "let" IDENT "=" term "in" term
       { $$ = std::make_unique<sandbox::parser::Let>(std::move($2), std::move($4), std::move($6)); }
