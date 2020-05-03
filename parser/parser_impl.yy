@@ -1,12 +1,25 @@
-%skeleton "lalr1.cc" /* -*- C++ -*- */
+//
+// parser_impl.yy
+//
+// This file is heavily commented, but comments only go so far.
+// You'll learn a lot by also cross-referencing with the generated code:
+//
+//   bazel-bin/parser/parser_impl.h
+//   bazel-bin/parser/parser_impl.cc
+//
+// if you've already built the code, and also the Bison docs:
+//
+//   <https://www.gnu.org/software/bison/manual/bison.html>
+//
+
+// Other options are glr / location, so this is effectively the only C++
+// skeleton (even if we used IELR).
+%skeleton "lalr1.cc"
 %require "3.3.2"
-%defines
 
-%define parse.assert
-
-%code requires {
 // This code lives in parser_impl.hh.
 // Since the Lexer also includes parser_impl.hh, these includes are visible there too.
+%code requires {
 
 #include "core/location.hh"
 #include "parser/node.hh"
@@ -20,23 +33,43 @@ namespace sandbox::parser {
 
 }
 
+// Declare an additional argument / instance variable on the parser class.
+// All the actions run in the context of the parser, so this instance variable
+// is available in all the parser actions.
+// Also declares that yylex receives (and will be given) this this as an arg.
 %param { sandbox::parser::Driver &driver }
 
-%locations
-%define api.location.type {sandbox::core::Range}
+// Include runtime sanity checks in the generated code.
+// By default forwards to assert(3), which means these checks will respect NDEBUG.
+%define parse.assert
 
 // Give a message to yy:parser::error describing the parse failure.
 // (Only other option is to make the message just "syntax error")
 %define parse.error verbose
+// TODO(jez) Why is this complaining
 // Lookahead correction (improves the accuracy of error messages)
 %define parse.lac full
 
-%code {
+// All tokens and non-terminals track locations in addition to their semantic value.
+%locations
+
+// Use our own location type, for a number of reasons: (1) we can tailor the
+// interface to our needs rather than relying on Bison, (2) we're going to use
+// locations elsewhere, and it's nice to use the same one everywhere, and (3)
+// %locations depends on generating additional header/source files, and
+// rules_bison doesn't (as of May 2020) declare them as outputs so Bazel
+// discards them after Bison generates them.
+%define api.location.type {sandbox::core::Range}
+
 // This code lives in the generated cc file (implementation), not the header.
+%code {
 
 #include "parser/driver.hh"
 
-yy::parser::symbol_type yylex(sandbox::parser::Driver &driver);
+yy::parser::symbol_type yylex(sandbox::parser::Driver &driver) {
+    return driver.lexer.next();
+}
+
 
 // Say how to default initialize the location that bison tracks for a
 // non-terminal. (Can be customized by using @$ and @<n> in each action.)
@@ -92,7 +125,7 @@ yy::parser::symbol_type yylex(sandbox::parser::Driver &driver);
 
 %%
 %start result;
-result: term  { driver.result = std::move($1); };
+result: term  { this->driver.result = std::move($1); };
 
 %nterm <std::unique_ptr<sandbox::parser::Node>> term;
 term
@@ -127,9 +160,9 @@ atom
 %%
 
 void yy::parser::error (const sandbox::core::Range& range, const std::string& m) {
+    // TODO(jez) Show filename:line:column in this error message, or even better
+    // build program-wide error reporting so you can show pretty errors like Sorbet.
+    (void) this->driver;
     std::cerr << range.showRaw() << ": " << m << '\n';
 }
 
-yy::parser::symbol_type yylex(sandbox::parser::Driver &driver) {
-    return driver.lexer.next();
-}

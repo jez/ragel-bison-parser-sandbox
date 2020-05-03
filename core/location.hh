@@ -28,7 +28,6 @@ private:
     constexpr static uint32_t INVALID_OFFSET = UINT32_MAX;
 
 public:
-
     // 0-indexed character offset into file source contents, inclusive
     uint32_t start;
 
