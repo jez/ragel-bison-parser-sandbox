@@ -50,6 +50,13 @@ namespace sandbox::parser {
 // Lookahead correction (improves the accuracy of error messages)
 %define parse.lac full
 
+// When tracing the parser, the parser will print tokens and reduced intermediates.
+%define parse.trace
+
+// Requests that tokens and non-terminals be printed when the parser is tracing itself.
+%printer { yyo << ($$)->showRaw(); } <std::unique_ptr<sandbox::parser::Node>>;
+%printer { yyo << $$; } <*>;
+
 // All tokens and non-terminals track locations in addition to their semantic value.
 %locations
 
@@ -68,6 +75,12 @@ namespace sandbox::parser {
 
 yy::parser::symbol_type yylex(sandbox::parser::Driver &driver) {
     return driver.lexer.next();
+}
+
+// Required for use with %define parse.trace
+// For some reason, I got dynamic linker errors when I had this in location.cc.
+std::ostream& operator<<(std::ostream& out, const sandbox::core::Range& r) {
+    return out << "Range { start = " << r.start << ", end = " << r.end << " }";
 }
 
 
@@ -117,11 +130,6 @@ yy::parser::symbol_type yylex(sandbox::parser::Driver &driver) {
 
 // IDENT token owns a string
 %token <std::string> IDENT
-
-// TODO(jez) Try tracing the parser once
-// When tracing the parser, the parser will print tokens and reduced intermediates.
-// %define parse.trace
-// %printer { yyo << $$; } <*>;
 
 %%
 %start result;

@@ -5,6 +5,6 @@
 
 namespace sandbox::parser {
 
-std::unique_ptr<Node> parse(std::string_view source);
+std::unique_ptr<Node> parse(std::string_view source, bool trace = false);
 
 }

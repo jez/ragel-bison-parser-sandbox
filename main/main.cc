@@ -13,7 +13,7 @@ int main(int argc, char *argv[]) {
     string_view source = argv[1];
     fmt::print("input:  {}\n", source);
 
-    auto result = sandbox::parser::parse(source);
+    auto result = sandbox::parser::parse(source, true);
     if (result == nullptr) {
         fmt::print("TODO(jez) error message when parse failed\n");
         return 1;
