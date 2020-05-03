@@ -15,7 +15,6 @@ int main(int argc, char *argv[]) {
 
     auto result = sandbox::parser::parse(source);
     if (result == nullptr) {
-        fmt::print("TODO(jez) error message when parse failed\n");
         return 1;
     }
 
