@@ -29,5 +29,4 @@ load("@rules_bison//bison:bison.bzl", "bison_register_toolchains")
 bison_register_toolchains()
 
 BAZEL_INSTALLER_VERSION_darwin_SHA = "5cfa97031b43432b3c742c80e2e01c41c0acdca7ba1052fc8cf1e291271bc9cd"
-# TODO(jez) Test on linux
-BAZEL_INSTALLER_VERSION_linux_SHA = "0"
+BAZEL_INSTALLER_VERSION_linux_SHA = "7ba815cbac712d061fe728fef958651512ff394b2708e89f79586ec93d1185ed"
