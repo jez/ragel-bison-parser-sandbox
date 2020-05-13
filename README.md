@@ -6,7 +6,7 @@ parses lambda calculus expressions to an AST and prints it.
 Very much inspired by the build toolchain that [Sorbet] uses.
 
 ```bash
-./bazel run //main:sandbox -- $'let f = \x -> x in f f'
+./bazel run //main:sandbox -- $'let f = \\x -> x in f f'
 # input:  let x = \x -> x in x x
 # output: Let { bind = x, what = Lam { param = x, body = Var { var = x } }, inWhere = App { f = Var { var = x }, arg = Var { var = x } } }
 
@@ -73,6 +73,11 @@ I work on:
 The Rust project and the Haskell project use basically the same surface syntax,
 so you can get a more or less equal comparison of Ragel/Bison, Alex/Happy, and
 lalrpop.
+
+## TODO(jez)
+
+- core::GlobalState / core::Context threaded through whole program.
+  - error reporting
 
 [Sorbet]: https://github.com/sorbet/sorbet
 [rust-lc-interp]: https://github.com/jez/rust-lc-interp

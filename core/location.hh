@@ -52,7 +52,7 @@ public:
 
 class Location {
 public:
-    // TODO(jez) This should store a FileRef instead of a strinv_view eventually
+    // TODO(jez) This should store a FileRef instead of a string_view eventually
     std::string_view source;
 
     Range range;
@@ -60,7 +60,7 @@ public:
     // TODO(jez) Location constructors
 };
 
-}
+} // namespace sandbox::core
 
 // Required for use with %define parse.trace
-std::ostream& operator<<(std::ostream& out, const sandbox::core::Range& r);
+std::ostream &operator<<(std::ostream &out, const sandbox::core::Range &r);

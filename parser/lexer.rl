@@ -23,6 +23,10 @@ using namespace std;
 
         lower ( alnum | "_" | "'" )*
             { return yy::parser::make_IDENT(string(ts, te - ts), tokenRange()); };
+
+        // TODO(jez) Emit error for unexpected character
+
+        // TODO(jez) Consider moving EOF handling into the scanner (sorbet does this)
     *|;
 }%%
 
